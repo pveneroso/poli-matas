@@ -1,0 +1,58 @@
+class Boids {
+  PVector position, acceleration, velocity;
+  color c;
+  float radius;
+  float sight = 100;
+
+  Boids() {
+    position = new PVector(random(width), random(height));
+    acceleration = new PVector(random(-1, 1), random(-1, 1));
+    velocity = new PVector(random(-2, 2), random(-2, 2));
+
+    c = color(random(20, 80), random(20, 80), random(50, 200));
+    radius = random(1, 8);
+  }
+
+  void move() {
+    velocity.add(acceleration);
+    velocity.limit(3);
+    position.add(velocity);
+
+    if (position.x < 0) {
+      position.x = width;
+    } else if (position.x > width) {
+      position.x = 0;
+    }
+
+    if (position.y < 0) {
+      position.y = height;
+    } else if (position.y > height) {
+      position.y = 0;
+    }
+  }
+
+  void display() {
+    fill(c);
+    ellipse(position.x, position.y, radius*2, radius*2);
+  }
+
+  void align(ArrayList<Boids> _boids) {
+    PVector steering = new PVector(0, 0);
+    int total = 0;
+    for (Boids b : _boids) {
+      float distance = dist(b.position.x, b.position.y, position.x, position.y);
+      if (distance < sight) {
+        steering.add(b.velocity);
+        total++;
+      }
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.sub(velocity);
+      //steering.normalize();
+      //steering.setMag(2);
+      
+    }
+    acceleration.add(steering);
+  }
+}

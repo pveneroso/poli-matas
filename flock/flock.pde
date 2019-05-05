@@ -25,10 +25,10 @@ void draw() {
     b.display();
   }
 
-  if (frameCount % 1000 == 0) {
-    boids = new ArrayList<Boids>();
-    for (int i = 0; i < 500; i++) {
-      boids.add(new Boids());
-    }
-  }
+  //if (frameCount % 1000 == 0) {
+  //  boids = new ArrayList<Boids>();
+  //  for (int i = 0; i < 500; i++) {
+  //    boids.add(new Boids());
+  //  }
+  //}
 }

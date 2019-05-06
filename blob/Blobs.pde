@@ -1,7 +1,7 @@
 class Blobs {
   float x, y, w, h;
   ArrayList<PVector> coordinates = new ArrayList<PVector>();
-  color c = color(random(255),random(255),random(255));
+  color c = color(random(255), random(255), random(255));
 
   Blobs(PVector coord) {
     coordinates.add(coord);
@@ -37,13 +37,21 @@ class Blobs {
   //  return match;
   //}
 
+  //boolean isNear(PVector coord) {
+  //  boolean match = false;
+  //  for (PVector c : coordinates) {
+  //    //if(distSq(c.x, c.y, coord.x, coord.y) < 15){
+  //    if (dist(c.x, c.y, coord.x, coord.y) < 1) { // 5
+  //      match  = true;
+  //    }
+  //  }
+  //  return match;
+  //}
+
   boolean isNear(PVector coord) {
     boolean match = false;
-    for (PVector c : coordinates) {
-      //if(distSq(c.x, c.y, coord.x, coord.y) < 15){
-      if (dist(c.x, c.y, coord.x, coord.y) < 5) {
+      if (dist(x, y, coord.x, coord.y) < 2) { // 5
         match  = true;
-      }
     }
     return match;
   }
@@ -68,34 +76,34 @@ class Blobs {
     }
   }
 
-  boolean intersect(ArrayList<PVector> coords){
+  boolean intersect(ArrayList<PVector> coords) {
     boolean match = false;
-    for(PVector c : coords){
-      for(PVector b : coordinates){
-        if(dist(c.x, c.y, b.x, b.y) < 5){
+    for (PVector c : coords) {
+      for (PVector b : coordinates) {
+        if (dist(c.x, c.y, b.x, b.y) < 5) {
           match = true;
         }
       }
     }
     return match;
   }
-  
-  void join(ArrayList<PVector> coords, float _x, float _y, float _w, float _h){
+
+  void join(ArrayList<PVector> coords, float _x, float _y, float _w, float _h) {
     coordinates.addAll(coords);
-    
+
     PVector initial = coordinates.get(0);
     float minx = initial.x;
     float maxx = initial.x;
     float miny = initial.y;
     float maxy = initial.y;
-    
-    for(PVector c : coordinates){
+
+    for (PVector c : coordinates) {
       minx = min(minx, c.x);
       maxx = max(maxx, c.x);
       miny = min(miny, c.y);
       maxy = max(maxy, c.y);
     }
-    
+
     x = minx;
     y = miny;
     w = maxx - minx;

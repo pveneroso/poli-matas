@@ -1,9 +1,24 @@
 class Path {
   PVector position, acceleration, speed;
-  float r = 1;
-  float max_speed = 2;
+  float r = 0.5;
+  float max_speed = 1; // 2
+  float limit_target = 0.2;
+  float limit_separation = 0.4; // 0.3
+  Blobs current_target = null;
+  int general_sight = 3; // 3
 
   Path() {
+    //position = new PVector(random(width), random(height));
+    //position = new PVector(width/2, height/2);
+    position = new PVector(random(width/2-180, width/2+180), random(height/2-100, height/2+100));
+    acceleration = new PVector(random(-1, 1), random(-1, 1));
+    speed = new PVector(random(-2, 2), random(-2, 2));
+  }
+  
+  Path(float _x, float _y) {
+    position = new PVector(_x, _y);
+    acceleration = new PVector(random(-1, 1), random(-1, 1));
+    speed = new PVector(random(-2, 2), random(-2, 2));
   }
 
   void move() {
@@ -25,14 +40,68 @@ class Path {
   }
 
   void display() {
+    noStroke();
+    //fill(255, 0, 0);
+    fill(0);
     ellipse(position.x, position.y, r*2, r*2);
+    //println(current_target);
   }
-  
-  void seek(){
-    
+
+  void seek(ArrayList<Blobs> _b) {
+    float distance = 30000;
+    for (Blobs b : _b) {
+      if (dist(b.x+(b.w/2), b.y+(b.h/2), position.x, position.y) < distance) {
+        distance = dist(b.x+(b.w/2), b.y+(b.h/2), position.x, position.y);
+        current_target = b;
+      }
+    }
   }
-  
-  void target(){
-    
+
+  void target() {
+    if (current_target != null) {
+      int sight = 1500;
+      PVector steering = new PVector(0, 0);
+      PVector current = new PVector(current_target.x+(current_target.w/2), current_target.y+(current_target.h/2));
+      if (dist(current.x, current.y, position.x, position.y) < sight) {
+        steering.add(current);
+        steering.sub(position);
+        steering.sub(speed);
+        steering.setMag(max_speed);
+        steering.limit(limit_target); //0.2
+      }
+      acceleration.add(steering);
+    }
+  }
+
+  void separation(ArrayList<Path> f) {
+    int sight = general_sight;
+    PVector steering = new PVector(0, 0);
+    int total = 0;
+    for (Path b : f) {
+      float distance = dist(b.position.x, b.position.y, position.x, position.y);
+      if (b != this && distance < sight) {
+        PVector diff = PVector.sub(position, b.position);
+        if (distance > 0) {
+          diff.div(distance);
+        }
+        steering.add(diff);
+        total++;
+      }
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(1);
+      steering.sub(speed);
+      steering.limit(limit_separation); // 0.4
+    }
+    if (total > 1) { // 20
+      current_target = null;
+      //limit_separation = 2;
+    }
+    //else{
+    //  limit_separation = 0.4;
+    //}
+    //limit_target = map(total, 0, f.size(), 0.2, 1);
+    acceleration.add(steering);
   }
 }

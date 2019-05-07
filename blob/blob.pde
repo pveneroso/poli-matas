@@ -1,3 +1,10 @@
+import processing.pdf.*;
+
+Manager manager;
+String file_name = "teste_03_";
+String file_extension = ".pdf";
+String current_counter;
+
 PImage ref;
 boolean[] target;
 int cell_size = 5;
@@ -9,14 +16,25 @@ int threshold = 127;
 
 boolean mp = false;
 
+SaveImage svimg;
+PGraphics img;
+
 void settings() {
-  size(566, 800);
+  svimg = new SaveImage();
+  size(svimg.tempw, svimg.temph);
 }
 
 void setup() {
+  String path = sketchPath();
+  manager = new Manager(path, file_name, file_extension);
+  current_counter = manager.currentCounter();
+  String save_path = file_name + current_counter + file_extension;
+
   ref = loadImage("path.jpg");
+  ref.resize(width, height);
   noStroke();
   smooth();
+  img = createGraphics(svimg.w, svimg.h, PDF, save_path);
 
   ref.loadPixels();
 
@@ -66,13 +84,14 @@ void setup() {
 
   // PATH
 
-  //for(int i = 0; i < 1500; i++){
-  //  particles.add(new Path());
-  //}
+  for(int i = 0; i < 2000; i++){
+    particles.add(new Path());
+  }
 }
 
 void draw() {
   fill(255, 15);
+  //fill(255);
   noStroke();
   rect(0, 0, width, height);
 
@@ -91,6 +110,7 @@ void draw() {
     p.target();
     p.separation(particles);
     p.move();
+    //p.displayTrail();
     p.display();
   }
 }
@@ -128,5 +148,7 @@ void keyPressed() {
         p.general_sight--;
       }
     }
+  } else if (key == 's') {
+    svimg.save(particles, img);
   }
 }

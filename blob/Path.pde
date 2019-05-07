@@ -6,6 +6,8 @@ class Path {
   float limit_separation = 0.4; // 0.3
   Blobs current_target = null;
   int general_sight = 3; // 3
+  
+  ArrayList<PVector> history = new ArrayList<PVector>();
 
   Path() {
     //position = new PVector(random(width), random(height));
@@ -13,6 +15,10 @@ class Path {
     position = new PVector(random(width/2-180, width/2+180), random(height/2-100, height/2+100));
     acceleration = new PVector(random(-1, 1), random(-1, 1));
     speed = new PVector(random(-2, 2), random(-2, 2));
+    
+    //if(random(1)>0.85){
+    //  general_sight = int(random(3, 10));
+    //}
   }
   
   Path(float _x, float _y) {
@@ -26,6 +32,11 @@ class Path {
     speed.limit(max_speed);
     position.add(speed);
     acceleration.mult(0);
+    
+    history.add(new PVector(position.x, position.y));
+    if(history.size() > 30){
+      history.remove(0);
+    }
 
     if (position.x < 0) {
       position.x = width;
@@ -44,7 +55,17 @@ class Path {
     //fill(255, 0, 0);
     fill(0);
     ellipse(position.x, position.y, r*2, r*2);
-    //println(current_target);
+  }
+  
+  void displayTrail(){
+    int counter = 0;
+    
+    for(PVector p : history){
+      float cc = (255/history.size())*counter;
+      fill(0, cc);
+      ellipse(p.x, p.y, r*2, r*2);
+      counter++;
+    }
   }
 
   void seek(ArrayList<Blobs> _b) {
@@ -77,6 +98,7 @@ class Path {
     int sight = general_sight;
     PVector steering = new PVector(0, 0);
     int total = 0;
+    int neighbors = 0;
     for (Path b : f) {
       float distance = dist(b.position.x, b.position.y, position.x, position.y);
       if (b != this && distance < sight) {
@@ -87,6 +109,9 @@ class Path {
         steering.add(diff);
         total++;
       }
+      else if(b != this && distance < 40){
+        neighbors++;
+      }
     }
     if (total > 0) {
       steering.div(total);
@@ -96,11 +121,13 @@ class Path {
     }
     if (total > 1) { // 20
       current_target = null;
-      //limit_separation = 2;
+      //general_sight = 10;
+      //limit_separation = 0.2;
     }
-    //else{
-    //  limit_separation = 0.4;
-    //}
+    else{
+      //general_sight = 4;
+      //limit_separation = 0.4;
+    }
     //limit_target = map(total, 0, f.size(), 0.2, 1);
     acceleration.add(steering);
   }

@@ -1,7 +1,7 @@
 class SaveImage {
   int resolution = 300;
-  float wcm = 44;
-  float hcm = 61.4;
+  float wcm = 16;
+  float hcm = 16;
   int w, h;
   float inch_to_cm = 2.54;
   float scale;
@@ -13,9 +13,9 @@ class SaveImage {
     float factor = (resolution/inch_to_cm);
     w = int(wcm * factor);
     h = int(hcm * factor);
-    temph = int(displayHeight-50);
+    temph = int(displayHeight-350);
     tempw = int(w*temph/h);
-    scale = (w/tempw)+0.5;
+    scale = (w/tempw)+0.42;
     //img = createGraphics(w,h);
   }
 

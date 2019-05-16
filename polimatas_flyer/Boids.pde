@@ -3,7 +3,7 @@ class Boids {
   color c;
   float radius;
   float sight = 20;
-  float separationFactor = 0.25;//random(0.2, 0.6);
+  float separationFactor = 0.4;//random(0.2, 0.6);
   float maxSpeed = 2;//random(0.5, 36);
 
   ArrayList<PVector> history = new ArrayList<PVector>();
@@ -13,10 +13,10 @@ class Boids {
     acceleration = new PVector(random(-1, 1), random(-1, 1));
     velocity = new PVector(random(-2, 2), random(-2, 2));
 
-    c = color(random(40, 80), random(40, 80), random(100, 200));
+    c = color(random(100, 200), random(40, 80), random(40, 80));
     //c = color(random(100, 180), random(100, 180), random(100, 180));
     //radius = random(0.3, 0.7);
-    radius = 0.5;
+    radius = 0.4;
   }
 
   void move() {
@@ -49,7 +49,7 @@ class Boids {
   }
 
   void align(ArrayList<Boids> _boids) {
-    sight = 20;
+    sight = 12;
     PVector steering = new PVector(0, 0);
     int total = 0;
     for (Boids b : _boids) {
@@ -63,7 +63,7 @@ class Boids {
       steering.div(total);
       steering.setMag(maxSpeed);
       steering.sub(velocity);
-      steering.limit(0.2);
+      steering.limit(0.12);
       //steering.mult(0.5);
     }
     acceleration.add(steering);
@@ -91,7 +91,7 @@ class Boids {
   }
 
   void separation(ArrayList<Boids> _boids) {
-    sight = 15;
+    sight = 12;
     PVector steering = new PVector(0, 0);
     int total = 0;
     for (Boids b : _boids) {

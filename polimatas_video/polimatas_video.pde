@@ -1,9 +1,11 @@
 import processing.pdf.*;
 
 Manager manager;
-String file_name = "exp_02_";
-String file_extension = ".pdf";
+String path;
+String file_name = "exp/01_";
+String file_extension = ".jpg";
 String current_counter;
+int counter = 0;
 
 PImage ref;
 boolean[] target;
@@ -16,6 +18,8 @@ int threshold = 127;
 
 boolean mp = false;
 
+boolean disable_tracking = false;
+
 SaveImage svimg;
 PGraphics img;
 
@@ -24,19 +28,20 @@ ArrayList<Boids> boids = new ArrayList<Boids>();
 void settings() {
   svimg = new SaveImage();
   size(svimg.tempw, svimg.temph);
+  //size(1920, 1080);
 }
 
 void setup() {
-  String path = sketchPath();
+  path = sketchPath();
   manager = new Manager(path, file_name, file_extension);
   current_counter = manager.currentCounter();
   String save_path = file_name + current_counter + file_extension;
 
-  ref = loadImage("path-2.jpg");
+  ref = loadImage("path-4.jpg");
   ref.resize(width, height);
   noStroke();
   smooth();
-  img = createGraphics(svimg.w, svimg.h, PDF, save_path);
+  img = createGraphics(svimg.w, svimg.h);
 
   ref.loadPixels();
 
@@ -86,50 +91,56 @@ void setup() {
 
   // PATH
 
-  //for (int i = 0; i < 1200; i++) {
-  //  particles.add(new Path());
-  //}
   for (int i = 0; i < 600; i++) {
-    float x = random(width/2-120, width/2+120);
-    float y = random(height/2-100, height/2-30);
+    float x = random(width/2-140, width/2+140);
+    float y = random(height/2-75, height/2-15);
     particles.add(new Path(x, y));
   }
   for (int i = 0; i < 1200; i++) {
     float x = random(width/2-200, width/2+200);
-    float y = random(height/2-30, height/2+50);
+    float y = random(height/2-10, height/2+70);
     particles.add(new Path(x, y));
   }
 
   // BOIDS
 
-  for (int i = 0; i < 800; i++) {
-    boids.add(new Boids());
-  }
+  //for (int i = 0; i < 800; i++) {
+  //  boids.add(new Boids());
+  //}
 }
 
 void draw() {
-  fill(255, 15);
-  //fill(255);
+  fill(255, 25);
+  fill(255);
   noStroke();
   rect(0, 0, width, height);
 
   if (mp) {
     particles.add(new Path(mouseX, mouseY));
   }
-  
+
   //stroke(0);
   //rectMode(CORNER);
   //rect(width/2-200, height/2-30, 400, 80);
 
   //image(ref, 0, 0);
+  //stroke(0);
+  //noFill();
+  //rect(width/2-140, height/2-75, 280, 60);
+  //rect(width/2-200, height/2-10, 400, 80);
+
   //for (Blobs b : blobs) {
-    //b.display();
-    //b.displayPixels();
+  //b.display();
+  //b.displayPixels();
   //}
 
   for (Path p : particles) {
-    p.seek(blobs);
-    p.target();
+    if (!disable_tracking) {
+      p.seek(blobs);
+      p.target();
+    }
+    p.align(particles);
+    p.cohesion(particles);
     p.separation(particles);
     p.move();
     //p.displayTrail();
@@ -143,6 +154,15 @@ void draw() {
     b.move();
     b.display();
   }
+
+  //SAVE
+  //current_counter = nf(counter, 5);
+  //String save_path = file_name + current_counter + file_extension;
+  //svimg.setPath(save_path);
+  //println(save_path);
+  //svimg.save(particles, boids, img);
+  //img = createGraphics(svimg.w, svimg.h);
+  //counter++;
 }
 
 int meanColor(color c) {
@@ -178,12 +198,17 @@ void keyPressed() {
         p.general_sight--;
       }
     }
-  } else if (key == 's') {
-    svimg.save(particles, boids, img);
-    String path = sketchPath();
-    manager = new Manager(path, file_name, file_extension);
-    current_counter = manager.currentCounter();
-    String save_path = file_name + current_counter + file_extension;
-    img = createGraphics(svimg.w, svimg.h, PDF, save_path);
+  } else if (key == 'd') {
+    // disable tracking
+    disable_tracking = !disable_tracking;
+  }
+}
+
+void createParticles() {
+  int counter = int(random(1, 6));
+  for (int i = 0; i < counter; i++) {
+    float x = random(0, width);
+    float y = random(0, height);
+    particles.add(new Path(x, y));
   }
 }

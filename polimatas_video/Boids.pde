@@ -49,7 +49,7 @@ class Boids {
   }
 
   void align(ArrayList<Boids> _boids) {
-    sight = 20;
+    sight = 15;
     PVector steering = new PVector(0, 0);
     int total = 0;
     for (Boids b : _boids) {
@@ -63,7 +63,7 @@ class Boids {
       steering.div(total);
       steering.setMag(maxSpeed);
       steering.sub(velocity);
-      steering.limit(0.2);
+      steering.limit(0.15);
       //steering.mult(0.5);
     }
     acceleration.add(steering);
@@ -91,7 +91,7 @@ class Boids {
   }
 
   void separation(ArrayList<Boids> _boids) {
-    sight = 15;
+    sight = 12;
     PVector steering = new PVector(0, 0);
     int total = 0;
     for (Boids b : _boids) {

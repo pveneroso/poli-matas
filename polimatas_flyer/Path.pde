@@ -3,9 +3,9 @@ class Path {
   float r = random(0.3,0.6); // 0.5
   float max_speed = 1; // 2
   float limit_target = 0.2;
-  float limit_separation = 0.35; // 0.3
+  float limit_separation = 0.22; // 0.3
   Blobs current_target = null;
-  int general_sight = 3; // 3
+  float general_sight = 2.5; // 3
   color c = color(30);
   
   ArrayList<PVector> history = new ArrayList<PVector>();
@@ -96,7 +96,7 @@ class Path {
   }
 
   void separation(ArrayList<Path> f) {
-    int sight = general_sight;
+    float sight = general_sight;
     PVector steering = new PVector(0, 0);
     int total = 0;
     int neighbors = 0;

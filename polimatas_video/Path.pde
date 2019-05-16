@@ -1,13 +1,14 @@
 class Path {
   PVector position, acceleration, speed;
-  float r = random(0.3,0.6); // 0.5
+  //float r = random(0.3, 0.6); // 0.5
+  float r = random(1, 1);
   float max_speed = 1; // 2
-  float limit_target = 0.2;
-  float limit_separation = 0.35; // 0.3
+  float limit_target = 0.25; //0.2
+  float limit_separation = 0.2; // 0.3
   Blobs current_target = null;
   int general_sight = 3; // 3
   color c = color(30);
-  
+
   ArrayList<PVector> history = new ArrayList<PVector>();
 
   Path() {
@@ -16,12 +17,12 @@ class Path {
     position = new PVector(random(width/2-180, width/2+180), random(height/2-100, height/2+100));
     acceleration = new PVector(random(-1, 1), random(-1, 1));
     speed = new PVector(random(-2, 2), random(-2, 2));
-    
+
     //if(random(1)>0.85){
     //  general_sight = int(random(3, 10));
     //}
   }
-  
+
   Path(float _x, float _y) {
     position = new PVector(_x, _y);
     acceleration = new PVector(random(-1, 1), random(-1, 1));
@@ -33,9 +34,9 @@ class Path {
     speed.limit(max_speed);
     position.add(speed);
     acceleration.mult(0);
-    
+
     history.add(new PVector(position.x, position.y));
-    if(history.size() > 30){
+    if (history.size() > 30) {
       history.remove(0);
     }
 
@@ -57,11 +58,11 @@ class Path {
     fill(0);
     ellipse(position.x, position.y, r*2, r*2);
   }
-  
-  void displayTrail(){
+
+  void displayTrail() {
     int counter = 0;
-    
-    for(PVector p : history){
+
+    for (PVector p : history) {
       float cc = (255/history.size())*counter;
       fill(0, cc);
       ellipse(p.x, p.y, r*2, r*2);
@@ -109,8 +110,7 @@ class Path {
         }
         steering.add(diff);
         total++;
-      }
-      else if(b != this && distance < 40){
+      } else if (b != this && distance < 40) {
         neighbors++;
       }
     }
@@ -124,12 +124,53 @@ class Path {
       current_target = null;
       //general_sight = 10;
       //limit_separation = 0.2;
-    }
-    else{
+    } else {
       //general_sight = 4;
       //limit_separation = 0.4;
     }
     //limit_target = map(total, 0, f.size(), 0.2, 1);
+    acceleration.add(steering);
+  }
+
+  void align(ArrayList<Path> _boids) {
+    int sight = 5;
+    PVector steering = new PVector(0, 0);
+    int total = 0;
+    for (Path b : _boids) {
+      float distance = dist(b.position.x, b.position.y, position.x, position.y);
+      if (b != this && distance < sight) {
+        steering.add(b.speed);
+        total++;
+      }
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.setMag(1);
+      steering.sub(speed);
+      steering.limit(0.1);
+      //steering.mult(0.5);
+    }
+    acceleration.add(steering);
+  }
+
+  void cohesion(ArrayList<Path> _boids) {
+    int sight = 10;
+    PVector steering = new PVector(0, 0);
+    int total = 0;
+    for (Path b : _boids) {
+      float distance = dist(b.position.x, b.position.y, position.x, position.y);
+      if (b != this && distance < sight) {
+        steering.add(b.position);
+        total++;
+      }
+    }
+    if (total > 0) {
+      steering.div(total);
+      steering.sub(position);
+      steering.sub(speed);
+      steering.limit(0.01);// 0.1 funciona bem
+      //steering.mult(0.5);
+    }
     acceleration.add(steering);
   }
 }

@@ -1,7 +1,7 @@
 import processing.pdf.*;
 
 Manager manager;
-String file_name = "exp_02_";
+String file_name = "exp_mapa_02_";
 String file_extension = ".pdf";
 String current_counter;
 
@@ -32,7 +32,7 @@ void setup() {
   current_counter = manager.currentCounter();
   String save_path = file_name + current_counter + file_extension;
 
-  ref = loadImage("path-2.jpg");
+  ref = loadImage("path-9.jpg");
   ref.resize(width, height);
   noStroke();
   smooth();
@@ -86,17 +86,14 @@ void setup() {
 
   // PATH
 
-  //for (int i = 0; i < 1200; i++) {
-  //  particles.add(new Path());
-  //}
-  for (int i = 0; i < 600; i++) {
-    float x = random(width/2-120, width/2+120);
-    float y = random(height/2-100, height/2-30);
+  for (int i = 0; i < 350; i++) {
+    float x = random(20, 160);
+    float y = random(20, 45);
     particles.add(new Path(x, y));
   }
-  for (int i = 0; i < 1200; i++) {
-    float x = random(width/2-200, width/2+200);
-    float y = random(height/2-30, height/2+50);
+  for (int i = 0; i < 700; i++) {
+    float x = random(20, 235);
+    float y = random(50, 95);
     particles.add(new Path(x, y));
   }
 
@@ -117,11 +114,13 @@ void draw() {
     particles.add(new Path(mouseX, mouseY));
   }
   
-  //stroke(0);
-  //rectMode(CORNER);
-  //rect(width/2-200, height/2-30, 400, 80);
+
 
   //image(ref, 0, 0);
+  //  stroke(0);
+  ////rectMode(CORNER);
+  //rect(20, 20, 140, 25);
+  //rect(20, 50, 215, 45);
   //for (Blobs b : blobs) {
     //b.display();
     //b.displayPixels();

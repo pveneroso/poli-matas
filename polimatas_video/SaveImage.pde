@@ -1,11 +1,13 @@
 class SaveImage {
   int resolution = 300;
-  float wcm = 44;
-  float hcm = 61.4;
+  float wcm = 16.256;
+  float hcm = 9.144;
   int w, h;
   float inch_to_cm = 2.54;
   float scale;
   int temph, tempw;
+  
+  String path;
 
   //PGraphics img;
 
@@ -13,10 +15,15 @@ class SaveImage {
     float factor = (resolution/inch_to_cm);
     w = int(wcm * factor);
     h = int(hcm * factor);
-    temph = int(displayHeight-50);
+    temph = int(displayHeight-350);
     tempw = int(w*temph/h);
-    scale = (w/tempw)+0.5;
+    scale = (w/tempw)+1;
     //img = createGraphics(w,h);
+    path = "";
+  }
+  
+  void setPath(String _path){
+    path = _path;
   }
 
   void save(ArrayList<Path> p, ArrayList<Boids> b, PGraphics img) {
@@ -77,6 +84,6 @@ class SaveImage {
     }
     img.dispose();
     img.endDraw();
-    //img.save("teste.pdf");
+    img.save(path);
   }
 }
